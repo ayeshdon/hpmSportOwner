@@ -124,7 +124,6 @@ fun signInOtpScreen(
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-
         LoginRoundedButton(
             enable = enteredOtp.length == 6,
             onClick = {
