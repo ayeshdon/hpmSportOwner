@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">HappyMeSportMerchant</string>
+    <string name="login_with_google">Login With Google</string>
+    <string name="login">Login</string>
+    <string name="verify_otp">Verify otp</string>
+    <string name="verify_account_with_otp_code">Verify Account With Otp Code</string>
+    <string name="weve_sent_6_digit_code_to">We\'ve sent 6 digit code to</string>
+    <string name="client_id">779010476662-bo0cpd43jr7bi8nprbo8luaubqnmi473.apps.googleusercontent.com</string>
+    <string name="enter_mobilea_number">Enter phone number</string>
+    <string name="eg_mobile_number">eg: 0712345678</string>
+    <string name="what_is_your_mobile_number">What is Your Mobile Number?</string>
+    <string name="please_enter_mobile_number_to_verify">Please enter your phone number to verify your account</string>
+    <string name="validate_mobile_number">Please enter valid mobile number</string>
+    <string name="onboard_title_01">Effortless Facility Management</string>
+    <string name="onboard_title_02">User &amp; Booking Control</string>
+    <string name="onboard_title_03">Payments &amp; Reports Made Simple</string>
+    <string name="onboard_des_01">Track availability, set schedules, and avoid double bookings</string>
+    <string name="onboard_des_02">Monitor player registrations, approve or modify bookings, and ensure smooth operations with powerful management tools.</string>
+    <string name="onboard_des_03">Handle payments, generate reports, and gain insights into facility usage with a few taps</string>
+</resources>
