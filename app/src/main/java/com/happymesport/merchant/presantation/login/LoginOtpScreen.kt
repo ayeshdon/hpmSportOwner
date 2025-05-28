@@ -124,7 +124,7 @@ fun signInOtpScreen(
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         LoginRoundedButton(
             enable = enteredOtp.length == 6,
             onClick = {
@@ -136,7 +136,6 @@ fun signInOtpScreen(
                 ),
         )
     }
-
 
     LaunchedEffect(Unit) {
         focusRequesters[0].requestFocus()
