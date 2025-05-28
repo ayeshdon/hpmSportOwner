@@ -135,6 +135,7 @@ fun signInOtpScreen(
                 ),
         )
     }
+
     LaunchedEffect(Unit) {
         focusRequesters[0].requestFocus()
     }
