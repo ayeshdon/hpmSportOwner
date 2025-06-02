@@ -20,7 +20,6 @@ import com.happymesport.merchant.presantation.vm.AuthViewModel
 
 @Composable
 fun authNavigation() {
-
     val systemUiController = rememberSystemUiController()
     val useDarkIcons = true
     val backgroundColor = Color.White // or MaterialTheme.colorScheme.background
@@ -28,23 +27,28 @@ fun authNavigation() {
     SideEffect {
         systemUiController.setSystemBarsColor(
             color = backgroundColor,
-            darkIcons = useDarkIcons
+            darkIcons = useDarkIcons,
         )
     }
 
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Onboarding) {
         composable<Onboarding> {
-            onBoardingScreen {
-                navController.navigate(SignInScreen)
-            }
+            val authViewModel: AuthViewModel = hiltViewModel()
+            onBoardingScreen(
+                {
+                    navController.navigate(SignInScreen)
+                },
+                authViewModel::onEvent,
+                authViewModel.stateAuthFlag.collectAsStateWithLifecycle(),
+            )
         }
         composable<SignInScreen> {
             val authViewModel: AuthViewModel = hiltViewModel()
             loginScreen(
                 onEvent = authViewModel::onEvent,
                 state = authViewModel.stateLoginMobile.collectAsStateWithLifecycle(),
-                navController = navController
+                navController = navController,
             )
         }
 
@@ -52,10 +56,11 @@ fun authNavigation() {
             val authViewModel: AuthViewModel = hiltViewModel()
             var arg = it.toRoute<SignInOtpScreen>()
             signInOtpScreen(
+                state = authViewModel.stateLoginOtp.collectAsStateWithLifecycle(),
                 onEvent = authViewModel::onEvent,
                 mobileNumber = arg.mobileNumber,
                 code = arg.code,
-                navController = navController
+                navController = navController,
             )
         }
     }

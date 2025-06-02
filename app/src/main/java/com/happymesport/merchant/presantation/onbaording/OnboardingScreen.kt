@@ -1,5 +1,6 @@
 package com.happymesport.merchant.presantation.onbaording
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,19 +14,39 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.happymesport.merchant.domain.onboarding.OnboardingItemModel
+import com.happymesport.merchant.presantation.DashboardActivity
+import com.happymesport.merchant.presantation.event.AuthEvent
+import com.happymesport.merchant.presantation.state.ViewState
 import kotlinx.coroutines.launch
 
 @Composable
-fun onBoardingScreen(onFinished: () -> Unit) {
+fun onBoardingScreen(
+    onFinished: () -> Unit,
+    onEvent: (AuthEvent) -> Unit,
+    state: State<ViewState<Boolean>>,
+) {
+    var context = LocalContext.current
+    LaunchedEffect(Unit) {
+        onEvent(AuthEvent.GetAuthFlag)
+    }
+    LaunchedEffect(state.value.data) {
+        state.value.data?.let {
+            var intent = Intent(context, DashboardActivity::class.java)
+            context.startActivity(intent)
+        }
+    }
+
     val pages =
         listOf(
             OnboardingItemModel.FirstPage,
@@ -39,7 +60,6 @@ fun onBoardingScreen(onFinished: () -> Unit) {
         }
 
     Scaffold(bottomBar = {
-
     }, content = {
         Column(Modifier.padding(it).background(color = Color.White)) {
             bottomBar(pagerState, pages, onFinished)
@@ -123,9 +143,8 @@ fun bottomBar(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun OnboardingScreenPreview() {
-    onBoardingScreen {
-    }
-}
+// @Preview(showBackground = true)
+// @Composable
+// fun OnboardingScreenPreview() {
+//    onBoardingScreen(onEvent = {}, onFinished = {})
+// }

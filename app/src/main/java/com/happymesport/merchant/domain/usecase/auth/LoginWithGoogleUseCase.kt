@@ -1,6 +1,8 @@
-package com.happymesport.merchant.domain.auth
+package com.happymesport.merchant.domain.usecase.auth
 
 import com.happymesport.merchant.common.Resources
+import com.happymesport.merchant.domain.model.LoggedUser
+import com.happymesport.merchant.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

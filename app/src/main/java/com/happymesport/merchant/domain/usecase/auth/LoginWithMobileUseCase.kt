@@ -1,9 +1,10 @@
-package com.happymesport.merchant.domain.auth
+package com.happymesport.merchant.domain.usecase.auth
 
 import android.app.Activity
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.happymesport.merchant.common.Resources
+import com.happymesport.merchant.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber

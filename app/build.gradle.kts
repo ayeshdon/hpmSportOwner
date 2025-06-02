@@ -53,6 +53,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -87,6 +88,12 @@ dependencies {
 
 //    hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.datastore.core.android)
+    implementation(libs.material)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+//    implementation(libs.androidx.navigation.fragment.ktx)
+//    implementation(libs.androidx.navigation.ui.ktx)
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
@@ -97,6 +104,9 @@ dependencies {
 
     //system-ui
     implementation(libs.android.system.ui)
+
+    //data-store
+    implementation(libs.data.store)
 
     // live data
 //    implementation(libs.android.livedata.compose)

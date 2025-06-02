@@ -3,8 +3,8 @@ package com.happymesport.merchant.data.auth
 import android.app.Activity
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
-import com.happymesport.merchant.domain.auth.AuthRepository
-import com.happymesport.merchant.domain.auth.LoggedUser
+import com.happymesport.merchant.domain.model.LoggedUser
+import com.happymesport.merchant.domain.repository.AuthRepository
 import javax.inject.Inject
 
 class AuthRepositoryImpl
@@ -30,5 +30,14 @@ class AuthRepositoryImpl
                 onCodeSent,
                 activity,
             )
+        }
+
+        override suspend fun otpVerificationWithFirebase(
+            verificationId: String,
+            code: String,
+            onSuccess: () -> Unit,
+            onError: (String) -> Unit,
+        ) {
+            authDataSource.verifyOtpCode(verificationId, code, onSuccess, onError)
         }
     }

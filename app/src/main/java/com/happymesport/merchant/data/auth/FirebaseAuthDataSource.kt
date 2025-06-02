@@ -8,7 +8,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
-import com.happymesport.merchant.domain.auth.LoggedUser
+import com.happymesport.merchant.domain.model.LoggedUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -88,6 +88,30 @@ class FirebaseAuthDataSource
                         ).build()
 
                 PhoneAuthProvider.verifyPhoneNumber(options)
+            }
+        }
+
+        suspend fun verifyOtpCode(
+            verificationId: String,
+            code: String,
+            onSuccess: () -> Unit,
+            onError: (String) -> Unit,
+        ) {
+            Timber.e("VERIFY TOKEN : $verificationId")
+            Timber.e("VERIFY OTP : $code")
+            withContext(Dispatchers.IO) {
+                Timber.e("iiiiiiiiiiiiiii")
+                val credential = PhoneAuthProvider.getCredential(verificationId, code)
+                firebaseAuth
+                    .signInWithCredential(credential)
+                    .addOnCompleteListener {
+                        Timber.e("4444444444444")
+                        if (it.isSuccessful) {
+                            onSuccess()
+                        } else {
+                            onError("${it.exception?.localizedMessage}")
+                        }
+                    }
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.happymesport.merchant.domain.auth
+package com.happymesport.merchant.domain.model
 
 data class LoggedUser(
     val uuid: String,
