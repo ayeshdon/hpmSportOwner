@@ -31,11 +31,9 @@ class MainActivity : ComponentActivity() {
         }
         enableEdgeToEdge()
 
-
-
         setContent {
             HappyMeSportMerchantTheme {
-               authNavigation()
+                authNavigation()
             }
         }
     }

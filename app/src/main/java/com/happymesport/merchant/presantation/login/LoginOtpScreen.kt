@@ -65,7 +65,6 @@ fun signInOtpScreen(
     val enteredOtp by remember { derivedStateOf { otpValues.joinToString("") } }
     var errorMessage by remember { mutableStateOf("") }
 
-
     var spacing = LocalSpacing.current
     var context = LocalContext.current
 
@@ -167,6 +166,7 @@ fun signInOtpScreen(
                     AuthEvent.LoginWithMobileOtpVerify(
                         verificationId = code,
                         otp = enteredOtp,
+                        phone = mobileNumber,
                     ),
                 )
             },
@@ -182,4 +182,3 @@ fun signInOtpScreen(
         focusRequesters[0].requestFocus()
     }
 }
-

@@ -2,15 +2,11 @@ package com.happymesport.merchant.data.auth
 
 import android.app.Activity
 import com.google.firebase.FirebaseException
-import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
-import com.happymesport.merchant.domain.model.LoggedUser
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -21,35 +17,35 @@ class FirebaseAuthDataSource
     constructor(
         private val firebaseAuth: FirebaseAuth,
     ) {
-        suspend fun signInWithGoogle(idToken: String): LoggedUser? =
-            withContext(Dispatchers.IO) {
-                val credential = GoogleAuthProvider.getCredential(idToken, null)
-                val authResult = firebaseAuth.signInWithCredential(credential).await()
-                authResult.user?.let {
-                    LoggedUser(
-                        uuid = it.uid,
-                        name = "${it.displayName}",
-                        url = it.photoUrl.toString(),
-                        email = "${it.email}",
-                        phone = "${it.phoneNumber}",
-                    )
-                }
-            }
+//        suspend fun signInWithGoogle(idToken: String): UserModel? =
+//            withContext(Dispatchers.IO) {
+//                val credential = GoogleAuthProvider.getCredential(idToken, null)
+//                val authResult = firebaseAuth.signInWithCredential(credential).await()
+//                authResult.user?.let {
+//                    UserModel(
+//                        uuid = it.uid,
+//                        name = "${it.displayName}",
+//                        url = it.photoUrl.toString(),
+//                        email = "${it.email}",
+//                        phone = "${it.phoneNumber}",
+//                    )
+//                }
+//            }
 
-        suspend fun signInWithFacebook(idToken: String): LoggedUser? =
-            withContext(Dispatchers.IO) {
-                val credential = FacebookAuthProvider.getCredential(idToken)
-                val authResult = firebaseAuth.signInWithCredential(credential).await()
-                authResult.user?.let {
-                    LoggedUser(
-                        uuid = it.uid,
-                        name = "${it.displayName}",
-                        url = it.photoUrl.toString(),
-                        email = "${it.email}",
-                        phone = "${it.phoneNumber}",
-                    )
-                }
-            }
+//        suspend fun signInWithFacebook(idToken: String): UserModel? =
+//            withContext(Dispatchers.IO) {
+//                val credential = FacebookAuthProvider.getCredential(idToken)
+//                val authResult = firebaseAuth.signInWithCredential(credential).await()
+//                authResult.user?.let {
+//                    UserModel(
+//                        uuid = it.uid,
+//                        name = "${it.displayName}",
+//                        url = it.photoUrl.toString(),
+//                        email = "${it.email}",
+//                        phone = "${it.phoneNumber}",
+//                    )
+//                }
+//            }
 
         suspend fun loginWithMobileNumber(
             phoneNumber: String,
@@ -97,15 +93,11 @@ class FirebaseAuthDataSource
             onSuccess: () -> Unit,
             onError: (String) -> Unit,
         ) {
-            Timber.e("VERIFY TOKEN : $verificationId")
-            Timber.e("VERIFY OTP : $code")
             withContext(Dispatchers.IO) {
-                Timber.e("iiiiiiiiiiiiiii")
                 val credential = PhoneAuthProvider.getCredential(verificationId, code)
                 firebaseAuth
                     .signInWithCredential(credential)
                     .addOnCompleteListener {
-                        Timber.e("4444444444444")
                         if (it.isSuccessful) {
                             onSuccess()
                         } else {

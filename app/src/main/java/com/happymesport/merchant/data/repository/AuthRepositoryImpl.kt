@@ -1,10 +1,12 @@
-package com.happymesport.merchant.data.auth
+package com.happymesport.merchant.data.repository
 
 import android.app.Activity
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
-import com.happymesport.merchant.domain.model.LoggedUser
+import com.happymesport.merchant.data.auth.FirebaseAuthDataSource
+import com.happymesport.merchant.domain.model.UserModel
 import com.happymesport.merchant.domain.repository.AuthRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 class AuthRepositoryImpl
@@ -12,9 +14,9 @@ class AuthRepositoryImpl
     constructor(
         private val authDataSource: FirebaseAuthDataSource,
     ) : AuthRepository {
-        override suspend fun loginWithGoogle(idToken: String): LoggedUser? = authDataSource.signInWithGoogle(idToken)
-
-        override suspend fun loginWithFaceBook(idToken: String): LoggedUser? = authDataSource.signInWithFacebook(idToken)
+//        override suspend fun loginWithGoogle(idToken: String): UserModel? = authDataSource.signInWithGoogle(idToken)
+//
+//        override suspend fun loginWithFaceBook(idToken: String): UserModel? = authDataSource.signInWithFacebook(idToken)
 
         override suspend fun loginWithMobile(
             phoneNumber: String,
@@ -38,6 +40,7 @@ class AuthRepositoryImpl
             onSuccess: () -> Unit,
             onError: (String) -> Unit,
         ) {
+            Timber.e(" REPO code: $code")
             authDataSource.verifyOtpCode(verificationId, code, onSuccess, onError)
         }
     }

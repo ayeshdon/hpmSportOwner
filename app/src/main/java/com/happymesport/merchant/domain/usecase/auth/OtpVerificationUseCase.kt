@@ -4,6 +4,7 @@ import com.happymesport.merchant.common.Resources
 import com.happymesport.merchant.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 import javax.inject.Inject
 
 class OtpVerificationUseCase
@@ -19,6 +20,7 @@ class OtpVerificationUseCase
         ): Flow<Resources<Any>> =
             flow {
                 try {
+                    Timber.e(" UC code: $code")
                     emit(Resources.Loading())
                     repository.otpVerificationWithFirebase(
                         verificationId,
