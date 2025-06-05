@@ -29,6 +29,7 @@ import com.happymesport.merchant.presantation.DashboardActivity
 import com.happymesport.merchant.presantation.event.AuthEvent
 import com.happymesport.merchant.presantation.state.ViewState
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 fun onBoardingScreen(
@@ -42,8 +43,11 @@ fun onBoardingScreen(
     }
     LaunchedEffect(state.value.data) {
         state.value.data?.let {
-            var intent = Intent(context, DashboardActivity::class.java)
-            context.startActivity(intent)
+            Timber.e("ONBOARD LOGIN FLAG : ${it}")
+            if (it) {
+                var intent = Intent(context, DashboardActivity::class.java)
+                context.startActivity(intent)
+            }
         }
     }
 

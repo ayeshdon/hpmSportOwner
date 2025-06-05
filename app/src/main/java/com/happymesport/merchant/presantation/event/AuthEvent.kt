@@ -17,6 +17,7 @@ sealed class AuthEvent : BaseEvent {
     ) : AuthEvent()
 
     data class LoginWithMobileOtpVerify(
+        val phone: String,
         val otp: String,
         val verificationId: String,
     ) : AuthEvent()
