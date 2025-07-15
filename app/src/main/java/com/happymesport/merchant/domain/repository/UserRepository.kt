@@ -13,4 +13,16 @@ interface UserRepository {
         uid: String,
         timestamp: Timestamp,
     ): Resources<Unit>
+
+    suspend fun updateProfileImage(
+        imageUrl: String,
+        uid: String,
+    ): Resources<Unit>
+
+    suspend fun updateProfileProfile(
+        name: String,
+        email: String,
+        dob: String,
+        uid: String,
+    ): Resources<Unit>
 }

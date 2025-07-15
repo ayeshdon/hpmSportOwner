@@ -11,8 +11,11 @@ import com.happymesport.merchant.data.repository.UserRepositoryImpl
 import com.happymesport.merchant.domain.repository.AuthRepository
 import com.happymesport.merchant.domain.repository.UserRepository
 import com.happymesport.merchant.domain.usecase.auth.AuthTokenUseCase
+import com.happymesport.merchant.domain.usecase.auth.ProfileCompleteUseCase
 import com.happymesport.merchant.domain.usecase.auth.ReadAuthTokenUseCase
+import com.happymesport.merchant.domain.usecase.auth.ReadProfileCompleteUseCase
 import com.happymesport.merchant.domain.usecase.auth.SaveAuthTokenUseCase
+import com.happymesport.merchant.domain.usecase.auth.SaveProfileCompleteUseCase
 import com.happymesport.merchant.domain.usecase.user.CheckAndHandleUserLoginUseCase
 import dagger.Module
 import dagger.Provides
@@ -45,8 +48,23 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAppCheckHandelUseCase(repository: UserRepository): CheckAndHandleUserLoginUseCase =
-        CheckAndHandleUserLoginUseCase(repository)
+    fun provideProfileCompleteUseCases(tokenDelegate: AuthTokenPrefDelegate): ProfileCompleteUseCase =
+        ProfileCompleteUseCase(
+            readProfileCompleteUseCase = ReadProfileCompleteUseCase(tokenDelegate),
+            saveProfileCompleteUseCase = SaveProfileCompleteUseCase(tokenDelegate),
+        )
+
+    @Provides
+    @Singleton
+    fun provideSaveProfileCompleteUseCase(tokenDelegate: AuthTokenPrefDelegate): SaveProfileCompleteUseCase =
+        SaveProfileCompleteUseCase(tokenDelegate)
+
+    @Provides
+    @Singleton
+    fun provideAppCheckHandelUseCase(
+        repository: UserRepository,
+        tokenDelegate: AuthTokenPrefDelegate,
+    ): CheckAndHandleUserLoginUseCase = CheckAndHandleUserLoginUseCase(repository, SaveProfileCompleteUseCase(tokenDelegate))
 
     @Provides
     @Singleton

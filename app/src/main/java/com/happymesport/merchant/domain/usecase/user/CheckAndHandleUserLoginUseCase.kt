@@ -4,6 +4,7 @@ import com.google.firebase.Timestamp
 import com.happymesport.merchant.common.Resources
 import com.happymesport.merchant.domain.model.UserModel
 import com.happymesport.merchant.domain.repository.UserRepository
+import com.happymesport.merchant.domain.usecase.auth.SaveProfileCompleteUseCase
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -11,19 +12,21 @@ class CheckAndHandleUserLoginUseCase
     @Inject
     constructor(
         private val authRepository: UserRepository,
+        private val saveProfileCompleteUseCase: SaveProfileCompleteUseCase,
     ) {
         suspend operator fun invoke(
             uid: String,
             mobileNumber: String,
         ): Resources<UserModel> {
             val currentTime = Timestamp.now()
-
             val result = authRepository.getUser(uid)
+            Timber.e("CHECK USER EXISTENCE UC : $result")
 
             return when (result) {
                 is Resources.Success -> {
                     val existingUser = result.data
                     if (existingUser == null) {
+                        saveProfileCompleteUseCase.invoke(false)
                         Timber.e("NEW USER")
                         val newUser =
                             UserModel(
@@ -31,6 +34,7 @@ class CheckAndHandleUserLoginUseCase
                                 mobileNumber = mobileNumber,
                                 createdAt = currentTime.toDate().toString(),
                                 lastLoginTime = currentTime.toDate().toString(),
+                                imageUrl = "",
                             )
                         val addResult = authRepository.addUser(newUser)
                         when (addResult) {
@@ -43,6 +47,8 @@ class CheckAndHandleUserLoginUseCase
                             is Resources.Loading -> Resources.Loading()
                         }
                     } else {
+                        saveProfileCompleteUseCase.invoke(true)
+                        Timber.e("EXISTING USER")
                         val updateResult = authRepository.updateLastLoginTime(uid, currentTime)
                         when (updateResult) {
                             is Resources.Success ->

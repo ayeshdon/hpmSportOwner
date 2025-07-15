@@ -6,11 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 
-val Purple40 = Color(0xFF00796B)
-val PurpleGrey40 = Color(0xFF00897B)
-val Pink40 = Color(0xFF4DB6AC)
+val AppThemePrimary = Color(0xFF00796B)
+val AppThemeSecondary = Color(0xFF039589)
+val AppThemeLight = Color(0xFF4DB6AC)
 val ErrorRed = Color(0xFFD32F2F)
 val White = Color(0xFFFFFFFF)
+val BgGrey = Color(0xFFececec)
 
 // app color
 val textDark = Color(0xFF000000)
@@ -31,6 +32,15 @@ val ColorScheme.white: Color
             White
         } else {
             White
+        }
+
+val ColorScheme.background: Color
+    @Composable
+    get() =
+        if (MaterialTheme.colorScheme.isLight()) {
+            BgGrey
+        } else {
+            BgGrey
         }
 
 @Composable

@@ -24,6 +24,18 @@ class AuthTokenPrefDelegateImpl(
             .map { preferences ->
                 preferences[PreferenceKeys.TOKEN] ?: false
             }
+
+    override suspend fun readUserProfileCompleteFlag(): Flow<Boolean> =
+        context.dataStore.data
+            .map { preferences ->
+                preferences[PreferenceKeys.PROFILE_COMPLETE_FLAG] ?: false
+            }
+
+    override suspend fun saveUserProfileCompleteFlag(flag: Boolean) {
+        context.dataStore.edit { settings ->
+            settings[PreferenceKeys.PROFILE_COMPLETE_FLAG] = flag
+        }
+    }
 }
 
 private val readOnlyProperty = preferencesDataStore(name = Constants.AUTH_SETTINGS)
@@ -32,4 +44,5 @@ val Context.dataStore: DataStore<Preferences> by readOnlyProperty
 
 private object PreferenceKeys {
     val TOKEN = booleanPreferencesKey(Constants.AUTH_TOKEN)
+    val PROFILE_COMPLETE_FLAG = booleanPreferencesKey(Constants.PROFILE_COMPLETE_FLAG)
 }

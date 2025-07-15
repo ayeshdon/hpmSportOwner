@@ -9,6 +9,7 @@ fun UserDto.toDomain(): UserModel =
         uuid = this.uid,
         lastLoginTime = this.lastLoginTime,
         createdAt = this.createdAt,
+        imageUrl = this.imageUrl,
     )
 
 fun UserModel.toDto(): UserDto =
@@ -17,4 +18,5 @@ fun UserModel.toDto(): UserDto =
         mobileNumber = this.mobileNumber,
         createdAt = this.createdAt,
         lastLoginTime = this.lastLoginTime,
+        imageUrl = this.imageUrl,
     )

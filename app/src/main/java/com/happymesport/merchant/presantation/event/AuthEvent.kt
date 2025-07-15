@@ -25,5 +25,7 @@ sealed class AuthEvent : BaseEvent {
     data object LoginWithMobileReset : AuthEvent()
 
     data object Logout : AuthEvent()
+
     data object GetAuthFlag : AuthEvent()
+
 }
