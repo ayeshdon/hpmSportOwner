@@ -16,7 +16,7 @@ import com.happymesport.merchant.presantation.navigation.screens.Onboarding
 import com.happymesport.merchant.presantation.navigation.screens.SignInOtpScreen
 import com.happymesport.merchant.presantation.navigation.screens.SignInScreen
 import com.happymesport.merchant.presantation.onbaording.onBoardingScreen
-import com.happymesport.merchant.presantation.vm.AuthViewModel
+import com.happymesport.merchant.presantation.login.AuthViewModel
 
 @Composable
 fun authNavigation() {

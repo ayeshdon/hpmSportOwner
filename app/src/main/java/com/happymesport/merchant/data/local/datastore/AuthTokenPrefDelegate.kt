@@ -6,4 +6,8 @@ interface AuthTokenPrefDelegate {
     suspend fun saveAuthFlag(flag: Boolean)
 
     suspend fun readAuthFlag(): Flow<Boolean>
+
+    suspend fun readUserProfileCompleteFlag(): Flow<Boolean>
+
+    suspend fun saveUserProfileCompleteFlag(flag: Boolean)
 }

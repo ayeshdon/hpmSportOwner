@@ -118,7 +118,6 @@ fun signInOtpScreen(
                                 focusRequesters[index + 1].requestFocus()
                             }
                         }
-                        Timber.e("LENGTH : ${enteredOtp.length}")
                     },
                     modifier =
                         Modifier

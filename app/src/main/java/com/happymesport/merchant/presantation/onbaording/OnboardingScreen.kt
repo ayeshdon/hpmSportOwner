@@ -1,5 +1,6 @@
 package com.happymesport.merchant.presantation.onbaording
 
+import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -47,6 +48,7 @@ fun onBoardingScreen(
             if (it) {
                 var intent = Intent(context, DashboardActivity::class.java)
                 context.startActivity(intent)
+                (context as Activity).finish()
             }
         }
     }

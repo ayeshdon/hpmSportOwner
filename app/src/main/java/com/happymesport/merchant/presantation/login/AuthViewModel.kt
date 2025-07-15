@@ -1,14 +1,17 @@
-package com.happymesport.merchant.presantation.vm
+package com.happymesport.merchant.presantation.login
 
 import android.app.Activity
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.happymesport.merchant.common.Resources
 import com.happymesport.merchant.domain.usecase.auth.AuthTokenUseCase
 import com.happymesport.merchant.domain.usecase.auth.LoginWithMobileUseCase
 import com.happymesport.merchant.domain.usecase.auth.OtpVerificationUseCase
+import com.happymesport.merchant.domain.usecase.auth.ProfileCompleteUseCase
 import com.happymesport.merchant.domain.usecase.user.CheckAndHandleUserLoginUseCase
 import com.happymesport.merchant.presantation.event.AuthEvent
 import com.happymesport.merchant.presantation.state.ViewState
+import com.happymesport.merchant.presantation.vm.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,6 +29,7 @@ class AuthViewModel
         val otpUseCase: OtpVerificationUseCase,
         val handleUserLoginUseCase: CheckAndHandleUserLoginUseCase,
         private val authTokenUseCase: AuthTokenUseCase,
+        private val profileCompleteUseCase: ProfileCompleteUseCase,
     ) : BaseViewModel<AuthEvent>() {
         private val _stateLoginMobile = MutableStateFlow(ViewState<String>())
         val stateLoginMobile = _stateLoginMobile.asStateFlow()
@@ -33,6 +37,8 @@ class AuthViewModel
         val stateLoginOtp = _stateLoginOtp.asStateFlow()
         private val _stateAuthFlag = MutableStateFlow(ViewState<Boolean>())
         val stateAuthFlag = _stateAuthFlag.asStateFlow()
+        private val _stateCurrentUser = MutableStateFlow(ViewState<String>())
+        val stateCurrentUser = _stateCurrentUser.asStateFlow()
 
         override fun onEvent(event: AuthEvent) {
             when (event) {
@@ -70,24 +76,29 @@ class AuthViewModel
             mobileNumber: String,
             verificationId: String,
         ) {
-            Timber.e("OTP MOBILE : $mobileNumber")
-            Timber.e("OTP CODE : $otp")
-            Timber.e("OTP VERIFICATION ID : $verificationId")
-
             _stateLoginOtp.value = ViewState(isLoading = true)
             otpUseCase(verificationId = verificationId, code = otp, onSuccess = {
                 viewModelScope.launch {
                     authTokenUseCase.saveAuthToken(true)
+                    Timber.e("CALL CURRENT USER  : ${FirebaseAuth.getInstance().currentUser}")
                     FirebaseAuth.getInstance().currentUser?.let {
                         var uid = it.uid
-                        Timber.e("LOGGED UID : $uid")
-                        Timber.e("LOGGED Name  : ${it.displayName}")
-                        Timber.e("LOGGED email  : ${it.email}")
-                        handleUserLoginUseCase(uid, mobileNumber)
+                        Timber.e("CALL CURRENT USER ID : $uid")
+
+                        var result = handleUserLoginUseCase(uid, mobileNumber)
+
+                        when (result) {
+                            is Resources.Error ->
+                                _stateLoginOtp.value =
+                                    ViewState(error = "${result.message}", isLoading = false)
+
+                            is Resources.Loading -> _stateLoginOtp.value = ViewState(isLoading = true)
+                            is Resources.Success ->
+                                _stateLoginOtp.value =
+                                    ViewState(data = verificationId, isLoading = false)
+                        }
                     }
                 }
-
-                _stateLoginOtp.value = ViewState(data = verificationId, isLoading = false)
             }, onError = { msg ->
                 Timber.e("OTP ERROR : $msg")
                 _stateLoginOtp.value = ViewState(error = msg, isLoading = false)

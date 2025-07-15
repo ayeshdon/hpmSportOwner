@@ -30,7 +30,7 @@ android {
             isMinifyEnabled = false
             applicationIdSuffix = ".debug"
         }
-        create("UAT") {
+        create("uat") {
             isMinifyEnabled = true
             buildConfigField("String", "BASE_URL", "")
             applicationIdSuffix = ".uat"
@@ -92,10 +92,15 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.firebase.storage.ktx)
 //    implementation(libs.androidx.navigation.fragment.ktx)
 //    implementation(libs.androidx.navigation.ui.ktx)
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+
+    //coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network)
 
 //    firebase
     implementation(platform(libs.firebase.bom))
