@@ -7,3 +7,9 @@ object DashboardScreen
 
 @Serializable
 object UserProfileCreateScreen
+
+@Serializable
+object FacilityAddScreen
+
+@Serializable
+class FacilityAddOpeningHoursScreen

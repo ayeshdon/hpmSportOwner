@@ -1,84 +1,83 @@
 package com.happymesport.merchant.presantation.dashboard
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.happymesport.merchant.R
+import com.happymesport.merchant.domain.model.UserModel
 import com.happymesport.merchant.presantation.custom.ProfileAvatar
+import com.happymesport.merchant.presantation.theme.AppThemePrimary
 import com.happymesport.merchant.presantation.theme.LocalSpacing
 import com.happymesport.merchant.presantation.theme.LocalTypography
-import com.happymesport.merchant.presantation.theme.textDark
-import com.happymesport.merchant.presantation.theme.textLight
+import com.happymesport.merchant.presantation.theme.White
+import timber.log.Timber
 
 @Composable
-fun DashBoardAppBarView() {
-    val statusBarPadding = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+fun DashBoardAppBarView(userModel: UserModel?) {
 
     val spacing = LocalSpacing.current
     Surface(
         modifier =
             Modifier
-                .fillMaxWidth()
-                .height(spacing.appBarHeight),
-        shadowElevation = 4.dp,
+                .fillMaxWidth(),
     ) {
         Row(
             modifier =
                 Modifier
+                    .background(AppThemePrimary)
                     .fillMaxWidth()
-                    .padding(top = statusBarPadding, start = spacing.default, end = spacing.default)
-                    .height(IntrinsicSize.Min),
+                    .padding(spacing.default),
         ) {
             ProfileAvatar(
-                imageUrl = "",
+                size = 80.dp,
+                imageUrl = userModel?.imageUrl,
                 placeholderResId = R.drawable.vec_avater_place_holder,
             )
-            Spacer(modifier = Modifier.weight(1f))
-            nameView()
+            Spacer(modifier = Modifier.width(20.dp))
+            nameView(userModel?.name ?: "", userModel?.email ?: "")
         }
     }
 }
 
 @Composable
-fun nameView() {
+fun nameView(
+    name: String,
+    email: String,
+) {
     val spacing = LocalSpacing.current
-
-    Column(modifier = Modifier.padding(start = spacing.small)) {
+    Column(
+        modifier = Modifier.padding(start = spacing.small, top = spacing.default),
+        verticalArrangement = Arrangement.Center,
+    ) {
         Text(
-            text = "Ayesh Nanayakkara",
-            color = textDark,
+            text = name,
+            color = White,
+            style = LocalTypography.current.titleLarge,
+            modifier =
+                Modifier
+                    .align(Alignment.Start),
+        )
+        Text(
+            text = email,
+            color = White,
             style = LocalTypography.current.titleMedium,
             modifier =
                 Modifier
-                    .align(Alignment.End),
-        )
-        Text(
-            text = "Last Login 2025-06-04 05:45:34",
-            color = textLight,
-            style = LocalTypography.current.bodySmall,
-            modifier =
-                Modifier
-                    .align(Alignment.End),
+                    .align(Alignment.Start),
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DashBoardAppBarViewPreview() {
-    DashBoardAppBarView()
 }

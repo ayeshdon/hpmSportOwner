@@ -11,6 +11,7 @@ import com.happymesport.merchant.common.UiText
 import com.happymesport.merchant.domain.model.UserModel
 import com.happymesport.merchant.domain.repository.UserRepository
 import com.happymesport.merchant.domain.usecase.auth.SaveProfileCompleteUseCase
+import com.happymesport.merchant.domain.usecase.user.SaveProfileDataUseCase
 import com.happymesport.merchant.presantation.event.UserProfileEvent
 import com.happymesport.merchant.presantation.state.ViewState
 import com.happymesport.merchant.presantation.vm.BaseViewModel
@@ -28,7 +29,9 @@ class UserProfileViewModel
     @Inject
     constructor(
         private val userRepository: UserRepository,
+        private val authRepository: UserRepository,
         private val saveProfileCompleteUseCase: SaveProfileCompleteUseCase,
+        private val saveUserProfileUseCase: SaveProfileDataUseCase,
     ) : BaseViewModel<UserProfileEvent>() {
         private val _profileImgPickerState = MutableStateFlow(ViewState<ProfileImageUploadIEffect>())
         val profileImgPickerState = _profileImgPickerState.asStateFlow()
@@ -73,6 +76,8 @@ class UserProfileViewModel
                     when (result) {
                         is Resources.Success -> {
                             saveProfileCompleteUseCase.invoke(true)
+                            val saveUser = authRepository.getUser(it)
+                            saveUser.data?.let { userData -> saveUserProfileUseCase(userData) }
 
                             _profileUpdateState.update {
                                 it.copy(

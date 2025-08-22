@@ -6,27 +6,34 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.happymesport.merchant.presantation.dashboard.DashboardViewModel
 import com.happymesport.merchant.presantation.dashboard.dashboardScreen
+import com.happymesport.merchant.presantation.facility.FacilityAddMainView
+import com.happymesport.merchant.presantation.facility.FacilityCreateViewModel
+import com.happymesport.merchant.presantation.facility.FacilityOpeningHourScreen
 import com.happymesport.merchant.presantation.navigation.screens.DashboardScreen
+import com.happymesport.merchant.presantation.navigation.screens.FacilityAddOpeningHoursScreen
+import com.happymesport.merchant.presantation.navigation.screens.FacilityAddScreen
 import com.happymesport.merchant.presantation.navigation.screens.UserProfileCreateScreen
 import com.happymesport.merchant.presantation.profile.UserProfileCreateScreen
 import com.happymesport.merchant.presantation.profile.UserProfileViewModel
+import com.happymesport.merchant.presantation.theme.AppThemePrimary
 
 @Composable
 fun dashboardNavigation() {
     val systemUiController = rememberSystemUiController()
-    val useDarkIcons = true
-    val backgroundColor = Color.White // or MaterialTheme.colorScheme.background
+    val useDarkIcons = false
+    val backgroundColor = Color.White
 
     SideEffect {
         systemUiController.setSystemBarsColor(
-            color = backgroundColor,
-            darkIcons = false,
+            color = AppThemePrimary,
+            darkIcons = useDarkIcons,
         )
     }
 
@@ -38,6 +45,9 @@ fun dashboardNavigation() {
                 navController = navController,
                 onEvent = viewModel::onEvent,
                 profileState = viewModel.profileCompleteState.collectAsState(),
+                profileDetailsState = viewModel.profileDataState.collectAsStateWithLifecycle(),
+                facilityDataState = viewModel.facilityDataState.collectAsStateWithLifecycle(),
+                logoutEvent = viewModel.logoutEvent,
             )
         }
         composable<UserProfileCreateScreen> {
@@ -49,6 +59,33 @@ fun dashboardNavigation() {
                 profileImgUploadState = viewModel.profileImgUploadState.collectAsState(),
                 profileDetailsState = viewModel.profileDetailsState.collectAsStateWithLifecycle(),
                 profileUpdateState = viewModel.profileUpdateState.collectAsStateWithLifecycle(),
+            )
+        }
+        composable<FacilityAddScreen> { backStackEntry ->
+            val viewModel: FacilityCreateViewModel = hiltViewModel(backStackEntry)
+//            val viewModel = hiltViewModel<FacilityCreateViewModel>()
+            FacilityAddMainView(
+                navController = navController,
+                facilityCommonList = viewModel.facilityCommonDataState.collectAsStateWithLifecycle(),
+                onEvent = viewModel::onEvent,
+            )
+        }
+
+        composable<FacilityAddOpeningHoursScreen> {
+            val viewModel: FacilityCreateViewModel =
+                if (navController.previousBackStackEntry != null) {
+                    hiltViewModel(
+                        navController.previousBackStackEntry!!,
+                    )
+                } else {
+                    hiltViewModel()
+                }
+            //    val viewModel = hiltViewModel<FacilityCreateViewModel>()
+            FacilityOpeningHourScreen(
+                navController = navController,
+                name = viewModel.name.collectAsState().value,
+                description = viewModel.description.collectAsState().value,
+                selectedList = viewModel.selectedList.collectAsState().value,
             )
         }
     }

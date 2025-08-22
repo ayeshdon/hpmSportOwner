@@ -2,10 +2,8 @@ package com.happymesport.merchant.presantation.custom
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -33,9 +31,10 @@ fun ProfileAvatar(
         model = imageModel,
         contentDescription = contentDescription,
         contentScale = ContentScale.Fit,
-        modifier = Modifier
-            .size(size)
-            .clip(CircleShape)
-            .border(LocalSpacing.current.imageBorder, AppThemeLight, CircleShape)
+        modifier =
+            Modifier
+                .size(size)
+                .clip(CircleShape)
+                .border(LocalSpacing.current.imageBorder, AppThemeLight, CircleShape),
     )
 }

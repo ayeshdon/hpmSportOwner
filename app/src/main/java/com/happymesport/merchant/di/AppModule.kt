@@ -6,6 +6,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.happymesport.merchant.data.auth.FirebaseAuthDataSource
 import com.happymesport.merchant.data.local.datastore.AuthTokenPrefDelegate
 import com.happymesport.merchant.data.local.datastore.AuthTokenPrefDelegateImpl
+import com.happymesport.merchant.data.local.datastore.UserDataPrefDelegate
+import com.happymesport.merchant.data.local.datastore.UserDataPrefDelegateImpl
 import com.happymesport.merchant.data.repository.AuthRepositoryImpl
 import com.happymesport.merchant.data.repository.UserRepositoryImpl
 import com.happymesport.merchant.domain.repository.AuthRepository
@@ -17,6 +19,8 @@ import com.happymesport.merchant.domain.usecase.auth.ReadProfileCompleteUseCase
 import com.happymesport.merchant.domain.usecase.auth.SaveAuthTokenUseCase
 import com.happymesport.merchant.domain.usecase.auth.SaveProfileCompleteUseCase
 import com.happymesport.merchant.domain.usecase.user.CheckAndHandleUserLoginUseCase
+import com.happymesport.merchant.domain.usecase.user.GetUserProfileDataUseCase
+import com.happymesport.merchant.domain.usecase.user.SaveProfileDataUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,9 +34,6 @@ object AppModule {
     @Singleton
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
-    @Provides
-    @Singleton
-    fun provideAuthRepository(authDataSource: FirebaseAuthDataSource): AuthRepository = AuthRepositoryImpl(authDataSource)
 
     @Provides
     @Singleton
@@ -40,37 +41,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAppAuthCodeUseCases(tokenDelegate: AuthTokenPrefDelegate): AuthTokenUseCase =
-        AuthTokenUseCase(
-            readAuthToken = ReadAuthTokenUseCase(tokenDelegate),
-            saveAuthToken = SaveAuthTokenUseCase(tokenDelegate),
-        )
+    fun provideUserProfilePrefDelegate(application: Application): UserDataPrefDelegate = UserDataPrefDelegateImpl(context = application)
 
-    @Provides
-    @Singleton
-    fun provideProfileCompleteUseCases(tokenDelegate: AuthTokenPrefDelegate): ProfileCompleteUseCase =
-        ProfileCompleteUseCase(
-            readProfileCompleteUseCase = ReadProfileCompleteUseCase(tokenDelegate),
-            saveProfileCompleteUseCase = SaveProfileCompleteUseCase(tokenDelegate),
-        )
-
-    @Provides
-    @Singleton
-    fun provideSaveProfileCompleteUseCase(tokenDelegate: AuthTokenPrefDelegate): SaveProfileCompleteUseCase =
-        SaveProfileCompleteUseCase(tokenDelegate)
-
-    @Provides
-    @Singleton
-    fun provideAppCheckHandelUseCase(
-        repository: UserRepository,
-        tokenDelegate: AuthTokenPrefDelegate,
-    ): CheckAndHandleUserLoginUseCase = CheckAndHandleUserLoginUseCase(repository, SaveProfileCompleteUseCase(tokenDelegate))
 
     @Provides
     @Singleton
     fun provideFirebaseFireStore(): FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    @Provides
-    @Singleton
-    fun provideUserRepository(firestore: FirebaseFirestore): UserRepository = UserRepositoryImpl(firestore)
 }

@@ -13,6 +13,7 @@ class CheckAndHandleUserLoginUseCase
     constructor(
         private val authRepository: UserRepository,
         private val saveProfileCompleteUseCase: SaveProfileCompleteUseCase,
+        private val saveUserProfileUseCase: SaveProfileDataUseCase,
     ) {
         suspend operator fun invoke(
             uid: String,
@@ -20,7 +21,6 @@ class CheckAndHandleUserLoginUseCase
         ): Resources<UserModel> {
             val currentTime = Timestamp.now()
             val result = authRepository.getUser(uid)
-            Timber.e("CHECK USER EXISTENCE UC : $result")
 
             return when (result) {
                 is Resources.Success -> {
@@ -48,7 +48,7 @@ class CheckAndHandleUserLoginUseCase
                         }
                     } else {
                         saveProfileCompleteUseCase.invoke(true)
-                        Timber.e("EXISTING USER")
+                        saveUserProfileUseCase(result.data)
                         val updateResult = authRepository.updateLastLoginTime(uid, currentTime)
                         when (updateResult) {
                             is Resources.Success ->

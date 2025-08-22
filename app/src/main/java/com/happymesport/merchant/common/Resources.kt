@@ -2,6 +2,7 @@ package com.happymesport.merchant.common
 
 sealed class Resources<T>(
     val data: T?,
+    val exception: Exception? = null,
     val message: String? = null,
 ) {
     class Success<T>(
@@ -11,7 +12,8 @@ sealed class Resources<T>(
     class Error<T>(
         message: String?,
         data: T? = null,
-    ) : Resources<T>(data, message)
+        exception: Exception? = null,
+    ) : Resources<T>(data, exception, message)
 
     class Loading<T>(
         data: T? = null,

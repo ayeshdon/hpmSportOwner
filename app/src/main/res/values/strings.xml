@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">HappyMeSportMerchant</string>
     <string name="login_with_google">Login With Google</string>
+    <string name="common_error">Something went wrong</string>
     <string name="login">Login</string>
     <string name="verify_otp">Verify otp</string>
     <string name="verify_account_with_otp_code">Verify Account With Otp Code</string>
@@ -34,5 +35,20 @@
     <string name="save">Save</string>
     <string name="profile_image_upload_success">Successfully upload profile image</string>
     <string name="profile_update_success">Profile data successfully update</string>
+    <string name="facility_empty">You haven\'t added any facilities yet. Start by adding your first facility.</string>
+    <string name="add_new_facility">Add New Facility</string>
+    <string name="add_opening_hours">Add Opening Hours</string>
+    <string name="facility_name">Facility Name</string>>
+    <string name="description">Description</string>>
+    <string name="enter_details">Enter Details</string>>
+    <string name="select_available_sport">Select Available Sport</string>>
+    <string name="opening_hours">Opening Hours</string>
+    <string name="facility_description">Facility Description</string>>
+    <string name="location_permission_denied">Location permission denied. Cannot show current location.</string>>
+    <string name="outSide_sri_lanka">"Your current location is outside Sri Lanka. Centering on Sri Lanka."</string>>
+    <string name="current_location_switching">"Could not get current location. Centering on Sri Lanka"</string>>
+    <string name="enter_facility_name">"Please enter facility name."</string>>
+    <string name="enter_facility_description">"Please enter facility description."</string>>
+    <string name="select_facility">"Please select facility."</string>>
 
 </resources>

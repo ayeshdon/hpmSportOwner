@@ -45,6 +45,14 @@ val Typography.header: TextStyle
             fontWeight = FontWeight.Bold,
         )
 
+val Typography.AppBar: TextStyle
+    get() =
+        TextStyle(
+            fontSize = 22.sp,
+            fontFamily = fontFamily,
+            fontWeight = FontWeight.SemiBold,
+        )
+
 val Typography.mainHeader: TextStyle
     get() =
         TextStyle(

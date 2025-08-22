@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.compose.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.google.serivce)
+    alias(libs.plugins.secrets.gradle.plugin)
     kotlin("kapt")
 }
 
@@ -50,6 +51,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    secrets {
+        propertiesFileName = "secrets.properties"
+    }
     buildFeatures {
         compose = true
         buildConfig = true
@@ -80,11 +84,16 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.json.serialization)
 
-    //logging
+    // logging
     implementation(libs.timber.log)
 
-    //countryCodePicker
-   // implementation(libs.country.code.picker)
+    // countryCodePicker
+    // implementation(libs.country.code.picker)
+
+    // Map
+    implementation(libs.google.map.compose)
+    implementation(libs.google.map.service)
+    implementation(libs.google.map.service.location)
 
 //    hilt
     implementation(libs.hilt.android)
@@ -98,7 +107,7 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
-    //coil
+    // coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
 
@@ -108,10 +117,10 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.play.service.auth)
 
-    //system-ui
+    // system-ui
     implementation(libs.android.system.ui)
 
-    //data-store
+    // data-store
     implementation(libs.data.store)
 
     // live data
