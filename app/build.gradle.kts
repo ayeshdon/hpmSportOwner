@@ -127,6 +127,8 @@ dependencies {
 //    implementation(libs.android.livedata.compose)
 //    implementation(libs.android.livedata.ktx)
 
+    implementation(project(":commonUi"))
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

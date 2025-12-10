@@ -47,7 +47,7 @@ fun HPMTextField(
     errorBorderColor: Color = MaterialTheme.colorScheme.error,
     containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
 ) {
-    val actualTrailingIcon: @Composable (() -> Unit)? = { trailingIcon }
+    val actualTrailingIcon: @Composable () -> Unit = { trailingIcon }
 
     OutlinedTextField(
         value = value,

@@ -1,13 +1,12 @@
 package com.happymesport.merchant.presantation.event
 
 import com.happymesport.merchant.data.dto.AvailableFacility
+import com.happymesport.merchant.data.dto.FacilityDto
 
 sealed class FacilityEvent : BaseEvent {
     data object GetFacilityList : FacilityEvent()
 
-    data class SaveFacilityGeneralData(
-        val name: String,
-        val description: String,
-        val selectedList: List<AvailableFacility>,
+    data class AddFacilityList(
+        val facilityDto: FacilityDto,
     ) : FacilityEvent()
 }

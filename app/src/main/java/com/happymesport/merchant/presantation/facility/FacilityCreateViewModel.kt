@@ -5,7 +5,9 @@ import com.happymesport.merchant.R
 import com.happymesport.merchant.common.Resources
 import com.happymesport.merchant.common.UiText
 import com.happymesport.merchant.data.dto.AvailableFacility
+import com.happymesport.merchant.data.dto.FacilityDto
 import com.happymesport.merchant.domain.usecase.common.CommonSettingsFacilityUseCase
+import com.happymesport.merchant.domain.usecase.facility.AddFacilityUseCase
 import com.happymesport.merchant.presantation.event.FacilityEvent
 import com.happymesport.merchant.presantation.state.ViewState
 import com.happymesport.merchant.presantation.vm.BaseViewModel
@@ -14,7 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,9 +23,13 @@ class FacilityCreateViewModel
     @Inject
     constructor(
         private var commonSettingsFacilityUseCase: CommonSettingsFacilityUseCase,
+        private var saveFacilityUseCase: AddFacilityUseCase,
     ) : BaseViewModel<FacilityEvent>() {
         private val _facilityCommonDataState = MutableStateFlow(ViewState<List<AvailableFacility>>())
         val facilityCommonDataState = _facilityCommonDataState.asStateFlow()
+
+        private val _saveFacilityState = MutableStateFlow(ViewState<String>())
+        val saveFacilityState = _saveFacilityState.asStateFlow()
 
         private val _name = MutableStateFlow("")
         val name = _name.asStateFlow()
@@ -41,12 +46,40 @@ class FacilityCreateViewModel
                     getFacilityList()
                 }
 
-                is FacilityEvent.SaveFacilityGeneralData -> {
-                    setFacilityGeneralData(
-                        name = event.name,
-                        description = event.description,
-                        selectedList = event.selectedList,
-                    )
+                is FacilityEvent.AddFacilityList -> {
+                    addFacilityList(event.facilityDto)
+                }
+            }
+        }
+
+        private fun addFacilityList(facilityDto: FacilityDto) {
+            viewModelScope.launch {
+                saveFacilityUseCase.invoke(facilityDto).collect { result ->
+                    when (result) {
+                        is Resources.Error -> {
+                            _saveFacilityState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    data = null,
+                                    error =
+                                        "${UiText.StringResources(R.string.common_error)}\n${it.error}",
+                                )
+                            }
+                        }
+
+                        is Resources.Loading -> {
+                            _saveFacilityState.update { it.copy(isLoading = true) }
+                        }
+
+                        is Resources.Success -> {
+                            _saveFacilityState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    data = result.data,
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -81,16 +114,5 @@ class FacilityCreateViewModel
                     }
                 }
             }
-        }
-
-        private fun setFacilityGeneralData(
-            name: String,
-            description: String,
-            selectedList: List<AvailableFacility>,
-        ) {
-            Timber.e("SET VIEWMODEL NAME: $name, DESCRIPTION: $description LIST SIZE ${selectedList.size}")
-            _name.value = name
-            _description.value = description
-            _selectedList.value = selectedList
         }
     }

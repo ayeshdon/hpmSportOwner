@@ -43,6 +43,13 @@
     <string name="enter_details">Enter Details</string>>
     <string name="select_available_sport">Select Available Sport</string>>
     <string name="opening_hours">Opening Hours</string>
+    <string name="weekdays">Weekdays</string>
+    <string name="weekends">Weekends</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="save_confirmation">Follow data will be saved</string>
+    <string name="start_hours">Start Hours</string>
+    <string name="hourly_rate">Hourly Rate</string>
+    <string name="end_hours">End Hours</string>
     <string name="facility_description">Facility Description</string>>
     <string name="location_permission_denied">Location permission denied. Cannot show current location.</string>>
     <string name="outSide_sri_lanka">"Your current location is outside Sri Lanka. Centering on Sri Lanka."</string>>

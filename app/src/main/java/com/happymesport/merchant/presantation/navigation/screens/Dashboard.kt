@@ -12,4 +12,9 @@ object UserProfileCreateScreen
 object FacilityAddScreen
 
 @Serializable
-class FacilityAddOpeningHoursScreen
+class  FacilityAddOpeningHoursScreen(
+    val uid: String,
+    val sportName: String,
+    val sportId: String,
+    val sportUrl: String,
+)

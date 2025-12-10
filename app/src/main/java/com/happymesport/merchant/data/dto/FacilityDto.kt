@@ -7,8 +7,10 @@ import com.google.firebase.firestore.DocumentId
 data class FacilityDto(
     @DocumentId
     val uid: String = "",
+    val userId: String = "",
     val name: String = "",
     val address: String = "",
+    val description: String = "",
     val location: LocationDto? = null,
     val phone: String? = "",
     val status: String? = "",

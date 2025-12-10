@@ -32,4 +32,19 @@ class FacilityRepositoryImpl
                 throw e
             }
         }
+
+        override suspend fun saveFacilityDetails(facilityDto: FacilityDto): String {
+            try {
+                var saveId =
+                    getFacilityDocumentRef()
+                        .add(facilityDto)
+                        .await()
+
+                return saveId.id
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Timber.e("check error: ${e.message}")
+                throw e
+            }
+        }
     }

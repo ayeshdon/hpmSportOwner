@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
-import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -36,8 +35,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseAuth
 import com.happymesport.merchant.R
 import com.happymesport.merchant.data.dto.AvailableFacility
+import com.happymesport.merchant.data.dto.FacilityDto
 import com.happymesport.merchant.presantation.custom.AppErrorTextView
 import com.happymesport.merchant.presantation.custom.HPMAppBar
 import com.happymesport.merchant.presantation.custom.HPMTextField
@@ -48,17 +49,40 @@ import com.happymesport.merchant.presantation.state.ViewState
 import com.happymesport.merchant.presantation.theme.LocalSpacing
 import com.happymesport.merchant.presantation.theme.LocalTypography
 import com.happymesport.merchant.presantation.theme.White
+import com.happymesport.merchant.utils.Status
+import com.rmd.app.core.ui.dialogs.AlertType
+import com.rmd.app.core.ui.dialogs.AppDialog
 import timber.log.Timber
 
 @Composable
 fun FacilityAddMainView(
     navController: NavHostController,
     facilityCommonList: State<ViewState<List<AvailableFacility>>>,
+    saveFacilityState: State<ViewState<String>>,
     onEvent: (FacilityEvent) -> Unit,
 ) {
+    var sportSelectedList = remember { mutableStateListOf<AvailableFacility>() }
+
     LoadingDialog(isLoading = (facilityCommonList.value.isLoading))
     LaunchedEffect(Unit) {
         onEvent(FacilityEvent.GetFacilityList)
+    }
+
+    LaunchedEffect(saveFacilityState.value.data) {
+        saveFacilityState.value.data?.let {
+            Timber.e("Facility Created ID: $it")
+            Timber.e("wedwedweew sportSelectedList: ${sportSelectedList.size}")
+            Timber.e("Facility Created ID: ${sportSelectedList[0].name}")
+            Timber.e("Facility  UID: ${sportSelectedList[0].uid}")
+            navController.navigate(
+                FacilityAddOpeningHoursScreen(
+                    uid = it,
+                    sportName = sportSelectedList[0].name ?: "",
+                    sportId = sportSelectedList[0].uid ?: "",
+                    sportUrl = sportSelectedList[0].icon ?: "",
+                ),
+            )
+        }
     }
 
     Scaffold(
@@ -92,15 +116,20 @@ fun FacilityAddMainView(
                 FacilityAddForm(facilityCommonList) { name, description, selectedList ->
                     Timber.e("Facility Name: $name, Description: $description")
                     Timber.e("Selected Sports: ${selectedList.size}")
-                    onEvent(
-                        FacilityEvent.SaveFacilityGeneralData(
+                    sportSelectedList.addAll(selectedList)
+                    Timber.e("Selected sportSelectedList: ${sportSelectedList.size}")
+                    val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+                    val dto =
+                        FacilityDto(
                             name = name,
                             description = description,
-                            selectedList = selectedList,
+                            status = Status.STAGE_01.statusName,
+                            userId = uid,
+                        )
+                    onEvent(
+                        FacilityEvent.AddFacilityList(
+                            dto,
                         ),
-                    )
-                    navController.navigate(
-                        FacilityAddOpeningHoursScreen(),
                     )
                 }
             }
@@ -115,12 +144,14 @@ fun FacilityAddForm(
 ) {
     var facilityName by remember { mutableStateOf("") }
     var facilityDescription by remember { mutableStateOf("") }
-    val selectedList = remember { mutableStateListOf<AvailableFacility>() }
+
     var errorText by remember { mutableStateOf<String?>(null) }
+    var showDialog by remember { mutableStateOf(false) }
 
     val errorFacilityName = stringResource(id = R.string.enter_facility_name)
     val errorFacilityDirection = stringResource(id = R.string.enter_facility_description)
     val errorFacilitySelect = stringResource(id = R.string.select_facility)
+    var selectedList = remember { mutableStateListOf<AvailableFacility>() }
 
 //    var fusedLocationClient: FusedLocationProviderClient =
 //        LocationServices.getFusedLocationProviderClient(
@@ -169,12 +200,8 @@ fun FacilityAddForm(
                 color = MaterialTheme.colorScheme.onBackground,
             )
             FacilityPickView(it, selectedList) { selectedFacility ->
-                Timber.e("Selected Facility: ${selectedFacility.name}")
-                if (selectedList.contains(selectedFacility)) {
-                    selectedList.remove(selectedFacility)
-                } else {
-                    selectedList.add(selectedFacility)
-                }
+                selectedList.clear()
+                selectedList.add(selectedFacility)
             }
         }
 
@@ -187,6 +214,41 @@ fun FacilityAddForm(
         errorText?.let {
             AppErrorTextView(errorMessage = it)
         }
+        if (showDialog) {
+            val dialogMessage =
+                buildString {
+                    appendLine(":")
+                    appendLine("Facility Name : $facilityName")
+                    appendLine("Description : $facilityDescription")
+                    appendLine("Sports : ${selectedList.joinToString { it.name.toString() }}")
+                    append("Do you want to proceed?")
+                }
+            AppDialog(
+                alertType =
+                    AlertType.ConfirmAlert(
+                        title = stringResource(id = R.string.save_confirmation),
+                        message = dialogMessage,
+                        positiveButtonText = "Confirm",
+                        negativeButtonText = "No",
+                        onConfirmButton = {
+                            showDialog = false
+                            errorText = null
+                            onNextFacilityClick(
+                                facilityName,
+                                facilityDescription,
+                                selectedList,
+                            )
+                        },
+                        onNegativeButton = {
+                            showDialog = false
+                        },
+                        mainColor = MaterialTheme.colorScheme.primary,
+                    ),
+                onDismissRequest = {
+                    showDialog = false
+                },
+            )
+        }
         Button(
             onClick = {
                 if (facilityName.isEmpty()) {
@@ -196,12 +258,7 @@ fun FacilityAddForm(
                 } else if (selectedList.isEmpty()) {
                     errorText = errorFacilitySelect
                 } else {
-                    errorText = null
-                    onNextFacilityClick(
-                        facilityName,
-                        facilityDescription,
-                        facilityCommonList.value.data ?: emptyList(),
-                    )
+                    showDialog = true
                 }
             },
             modifier =

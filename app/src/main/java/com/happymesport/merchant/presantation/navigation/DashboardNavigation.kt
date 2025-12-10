@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.happymesport.merchant.presantation.dashboard.DashboardViewModel
 import com.happymesport.merchant.presantation.dashboard.dashboardScreen
@@ -68,10 +69,12 @@ fun dashboardNavigation() {
                 navController = navController,
                 facilityCommonList = viewModel.facilityCommonDataState.collectAsStateWithLifecycle(),
                 onEvent = viewModel::onEvent,
+                saveFacilityState = viewModel.saveFacilityState.collectAsStateWithLifecycle(),
             )
         }
 
         composable<FacilityAddOpeningHoursScreen> {
+            var arg = it.toRoute<FacilityAddOpeningHoursScreen>()
             val viewModel: FacilityCreateViewModel =
                 if (navController.previousBackStackEntry != null) {
                     hiltViewModel(
@@ -86,6 +89,10 @@ fun dashboardNavigation() {
                 name = viewModel.name.collectAsState().value,
                 description = viewModel.description.collectAsState().value,
                 selectedList = viewModel.selectedList.collectAsState().value,
+                sportName = arg.sportName,
+                sportId = arg.sportId,
+                sportUrl = arg.sportUrl,
+                uid = arg.uid,
             )
         }
     }
